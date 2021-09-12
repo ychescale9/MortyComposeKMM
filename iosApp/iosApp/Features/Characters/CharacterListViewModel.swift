@@ -8,13 +8,26 @@ class CharacterListViewModel: ObservableObject {
     var hasNextPage: Bool = false
     
     func fetchCharacters() {
-        repository.characterPagingData.watch { nullablePagingData in
-            guard let list = nullablePagingData?.compactMap({ $0 as? CharacterDetail }) else {
-                return
+        // this crashes
+        createFuture(for: repository.getCharactersNative(page: 0))
+            .assertNoFailure()
+            .sink { _ in }
+            .store(in: &subscriptions)
+        
+        // this also crashes
+        createPublisher(for: repository.characterPagerFlowNative)
+            .assertNoFailure()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                print("Received completion: \(completion)")
+            } receiveValue: { value in
+                print("Received value: \(value)")
             }
-            
-            self.characters = list
-            self.hasNextPage = self.repository.characterPager.hasNextPage
+            .store(in: &subscriptions)
+        
+        // this works
+        repository.getCharacters(page: 0) { result, error in
+            print(result)
         }
     }
     

@@ -13,6 +13,7 @@ import dev.johnoreilly.mortycomposekmm.fragment.LocationDetail
 import dev.johnoreilly.mortycomposekmm.shared.util.CommonFlow
 import dev.johnoreilly.mortycomposekmm.shared.util.asCommonFlow
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
 
 class MortyRepository {
     private val scope = MainScope()
@@ -69,6 +70,9 @@ class MortyRepository {
             )
         }
     )
+
+    val characterPagerFlow: Flow<PagingData<CharacterDetail>>
+        get() = characterPager.pagingData.cachedIn(scope)
 
     val characterPagingData: CommonFlow<PagingData<CharacterDetail>>
         get() = characterPager.pagingData
