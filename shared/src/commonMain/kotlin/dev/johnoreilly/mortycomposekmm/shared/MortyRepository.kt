@@ -1,6 +1,9 @@
 package dev.johnoreilly.mortycomposekmm.shared
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.withStore
 import com.kuuurt.paging.multiplatform.Pager
 import com.kuuurt.paging.multiplatform.PagingConfig
 import com.kuuurt.paging.multiplatform.PagingData
@@ -19,6 +22,9 @@ class MortyRepository {
     private val scope = MainScope()
 
     private val apolloClient = ApolloClient("https://rickandmortyapi.com/graphql")
+        .withStore(
+            store = ApolloStore(MemoryCacheFactory())
+        )
 
     suspend fun getCharacters(page: Int): GetCharactersQuery.Characters {
         val response = apolloClient.query(GetCharactersQuery(page))

@@ -54,6 +54,7 @@ kotlin {
                 api(Koin.test)
 
                 api(Deps.apolloRuntime)
+                api(Deps.apolloCaching)
                 api(Deps.multiplatformPaging)
             }
         }

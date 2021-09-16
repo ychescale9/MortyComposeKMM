@@ -8,21 +8,10 @@ class CharacterListViewModel: ObservableObject {
     var hasNextPage: Bool = false
     
     func fetchCharacters() {
-        // this crashes
+        // this crashes due to unable to Freeze
         createFuture(for: repository.getCharactersNative(page: 0))
             .assertNoFailure()
             .sink { _ in }
-            .store(in: &subscriptions)
-        
-        // this also crashes
-        createPublisher(for: repository.characterPagerFlowNative)
-            .assertNoFailure()
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                print("Received completion: \(completion)")
-            } receiveValue: { value in
-                print("Received value: \(value)")
-            }
             .store(in: &subscriptions)
         
         // this works
